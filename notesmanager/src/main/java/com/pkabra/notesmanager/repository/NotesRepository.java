@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.pkabra.notesmanager.model.NoteContent;
 
 @Repository
-public interface NotesRepository extends MongoRepository<NoteContent, Long> {
+public interface NotesRepository extends MongoRepository<NoteContent, String> {
 
 	public List<NoteContent> findByUserId(Long id);
 

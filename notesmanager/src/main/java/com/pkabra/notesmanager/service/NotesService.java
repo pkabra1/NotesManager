@@ -27,12 +27,18 @@ public class NotesService {
 
 	public NoteContent addNote(NoteContent note) {
 		note.setId(sequenceGeneratorService.generateSequence(NoteContent.SEQUENCE_NAME));
-		System.out.println("Title is: " + note.getTitle());
-		System.out.println("Content is: " + note.getContent());
 		return repo.insert(note);
 	}
 
 	public NoteContent updateNote(NoteContent note) {
 		return repo.save(note);
+	}
+	
+	public NoteContent getNote(String id) {
+		return repo.findById(id).orElse(null);
+	}
+	
+	public void deleteNote(String id) {
+		repo.deleteById(id);
 	}
 }
