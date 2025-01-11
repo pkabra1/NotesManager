@@ -1,7 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 function Navbar() {
+    const navigate = useNavigate();
+    const { isAuthenticated, logout } = useAuth();
+
+    // Handle Login/Logout
+    const handleAuthClick = () => {
+        if (isAuthenticated) {
+            // Handle logout
+            logout(); // Call logout from AuthContext
+            navigate('/login'); // Or any other route for logout
+        } else {
+            // Redirect to login page
+            navigate('/login');
+        }
+    };
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
             <Link className="navbar-brand" to="/">Navbar</Link>
@@ -24,9 +39,9 @@ function Navbar() {
                             Notes
                         </Link>
                     </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/">Link</Link>
-                    </li>
+                    {/* <li className="nav-item">
+                        <Link className="nav-link" to="/login">Login</Link>
+                    </li> */}
                     <li className="nav-item dropdown">
                         <a
                             className="nav-link dropdown-toggle"
@@ -57,6 +72,9 @@ function Navbar() {
                         Search
                     </button>
                 </form>
+                <Link className="m-2" to="/login"><button className="btn btn-outline-success" type="submit" onClick={handleAuthClick}>
+                    {isAuthenticated ? 'Logout' : 'Login'}
+                </button></Link>
             </div>
         </nav>
     );

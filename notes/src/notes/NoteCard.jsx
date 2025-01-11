@@ -1,11 +1,11 @@
 import { Card, Button } from "react-bootstrap";
 import { React, useState, useEffect } from "react";
-import { deleteUserNote, getAllNotes } from "../components/api/ApiService";
+import { deleteUserNote, getAllNotes, getUserNotes } from "../components/api/ApiService";
 import { useLocation } from "react-router-dom";
 import { grid } from 'ldrs'
-// import CreateNoteButton from "./CreateNoteButton";
 import FloatingActionButton from "./FloatingActionButton";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "./AuthContext";
 
 const NoteCard = ({ id, title, content, lastModified, onDelete }) => {
 
@@ -78,23 +78,45 @@ function UserNotes() {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const location = useLocation();
+    const { user, isAuthenticated } = useAuth();
     grid.register();
 
     useEffect(() => {
-        getNotes();
-    }, [location]);
-
-    async function getNotes() {
-        setLoading(true);
-        try {
-            const response = await getAllNotes();
-            console.log(response.data);
-            setNotes(response.data);
-        } catch (error) {
-            console.error("Error fetching notes:", error);
-        } finally {
-            setLoading(false);
+        if (!user || !user.id) {
+            // If the user or user.id is unavailable, skip fetching the notes
+            return;
         }
+        const getNotes = async () => {
+            setLoading(true);
+            try {
+                if (user.email === "admin@admin.com") {
+                    const response = await getAllNotes();
+                    console.log(user);
+                    console.log(response);
+                    setNotes(Array.isArray(response.data) ? response.data : []);
+                } else {
+                    const response = await getUserNotes(user.id);
+                    console.log(user);
+                    console.log(response);
+                    setNotes(Array.isArray(response.data) ? response.data : []);
+                }
+
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+                setNotes([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getNotes();
+    }, [location, user]); // Add user.id to the dependency array
+
+    // Conditional rendering based on authentication
+    if (!isAuthenticated) {
+        return (<div className="alert alert-danger text-center mt-5" role="alert">
+            You are not authorized to view this page. Please login.
+        </div>);
     }
 
     function getLastModified(lastModified) {
@@ -120,20 +142,22 @@ function UserNotes() {
     }
 
     return (
-        <div className="container mt-4">
-            {notes.map((note) => (
-                < NoteCard
-                    key={note.id}
-                    id={note.id}
-                    title={note.title}
-                    content={note.content}
-                    lastModified={getLastModified(note.lastModified)}
-                    onDelete={handleDeleteFromParent}
-                />
-            ))}
+        < div className="container mt-4" >
+            {
+                notes.map((note) => (
+                    <NoteCard
+                        key={note.id}
+                        id={note.id}
+                        title={note.title}
+                        content={note.content}
+                        lastModified={getLastModified(note.lastModified)}
+                        onDelete={handleDeleteFromParent}
+                    />
+                ))
+            }
             {/* <CreateNoteButton count={notes.length} /> */}
             <FloatingActionButton />
-        </div>
+        </div >
     );
 };
 

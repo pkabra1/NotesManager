@@ -1,26 +1,28 @@
 import React, { useState } from 'react';
 import { addNote } from '../components/api/ApiService';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 const NewNote = ({ initialTitle = '', initialContent = '' }) => {
     const [title, setTitle] = useState(initialTitle);
     const [content, setContent] = useState(initialContent);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("Current user is: ", user)
 
         const newNote = {
             title,
             content,
             lastModified: new Date().toISOString(),
-            userId: 1001,
+            userId: user.id,
         };
 
         addNote(newNote)
             .then((response) => {
-                console.log("Note added successfully: ", response.data);
                 navigate("/notes"); // Navigate to the notes page
             })
             .catch((error) => {

@@ -34,11 +34,11 @@ public class NotesService {
 		note.setId(id);
 		return repo.save(note);
 	}
-	
+
 	public NoteContent getNote(String id) {
 		return repo.findById(id).orElse(null);
 	}
-	
+
 	public void deleteNote(String id) {
 		repo.deleteById(id);
 	}

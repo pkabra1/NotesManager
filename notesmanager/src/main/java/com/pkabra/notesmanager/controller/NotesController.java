@@ -1,9 +1,9 @@
 package com.pkabra.notesmanager.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,32 +31,33 @@ public class NotesController {
 	}
 
 	@GetMapping("/allNotes")
-	public List<NoteContent> getAllNotes() {
-		return notesService.getAllNotes();
+	public ResponseEntity<?> getAllNotes() {
+		return ResponseEntity.ok(notesService.getAllNotes());
 	}
 
 	@GetMapping("/allUserNotes/{userId}")
-	public List<NoteContent> getUserNotes(@PathVariable Long userId) {
-		return notesService.getAllUserNotes(userId);
+	public ResponseEntity<?> getUserNotes(@PathVariable Long userId) {
+		return ResponseEntity.ok(notesService.getAllUserNotes(userId));
 	}
 
 	@PostMapping("/addNote")
-	public NoteContent addUserNote(@RequestBody NoteContent content) {
-		return notesService.addNote(content);
+	public ResponseEntity<?> addUserNote(@RequestBody NoteContent content) {
+		return ResponseEntity.ok(notesService.addNote(content));
 	}
-	
+
 	@GetMapping("/note/{noteId}")
-	public NoteContent getNote(@PathVariable String noteId) {
-		return notesService.getNote(noteId);
+	public ResponseEntity<?> getNote(@PathVariable String noteId) {
+		return ResponseEntity.ok(notesService.getNote(noteId));
 	}
-	
+
 	@DeleteMapping("/delete/note/{noteId}")
-	public void deleteUserNote(@PathVariable String noteId) {
+	public ResponseEntity<Void> deleteUserNote(@PathVariable String noteId) {
 		notesService.deleteNote(noteId);
+		return ResponseEntity.noContent().build(); // Respond with HTTP 204 No Content
 	}
-	
+
 	@PutMapping("/update/note/{noteId}")
-	public NoteContent updateUserNote(@RequestBody NoteContent note, @PathVariable String noteId) {
-		return notesService.updateNote(note, noteId);
+	public ResponseEntity<?> updateUserNote(@RequestBody NoteContent note, @PathVariable String noteId) {
+		return ResponseEntity.ok(notesService.updateNote(note, noteId));
 	}
 }

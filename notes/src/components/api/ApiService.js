@@ -4,6 +4,10 @@ export const getAllNotes = () => {
     return apiClient.get("/allNotes");
 }
 
+export const getUserNotes = (id) => {
+    return apiClient.get(`/allUserNotes/${id}`);
+}
+
 export const addNote = (note) => {
     return apiClient.post("/addNote", note, {
         headers: {

@@ -36,33 +36,18 @@ public class JWTSecurityConfig {
 		this.userService = userService;
 	}
 
-//	@Bean
-//	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//				.authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/register").permitAll()
-//						.requestMatchers("http://localhost:8080/**", "http://localhost:3000/**").authenticated()
-//						.anyRequest().authenticated() // Protect everything else
-//				).formLogin(form -> form.loginPage("/login") // Redirect to Spring Security's in-built login page
-//						.defaultSuccessUrl("/allNotes", true) // Redirect to /allNotes after successful login
-//						.permitAll())
-//				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login") // Redirect to login page after
-//																							// logout
-//						.permitAll())
-//				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//		return http.build();
-//	}
-
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/register").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+						.requestMatchers("/").permitAll() // Root
+						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI & OpenAPI
+																							// definitions
+						.requestMatchers("/api/auth/**").permitAll().requestMatchers("/api/notes/**").authenticated()
 						.requestMatchers("http://localhost:8080/**", "http://localhost:3000/**").authenticated()
 						.anyRequest().authenticated() // Protect everything else
-				).formLogin(form -> form.permitAll())
-				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login") // Redirect to login page after
-																							// logout
-						.permitAll())
+				).formLogin(form -> form.permitAll()).logout(logout -> logout.logoutUrl("/logout")
+						.logoutSuccessUrl("http://localhost:3000/login").permitAll())
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

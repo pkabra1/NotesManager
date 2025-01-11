@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { updateUserNote } from '../components/api/ApiService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 const UpdateNote = () => {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ const UpdateNote = () => {
     const [title, setTitle] = useState(initialTitle);
     const [content, setContent] = useState(initialContent);
     const [message, setMessage] = useState('');
+    const { user } = useAuth();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -23,11 +25,12 @@ const UpdateNote = () => {
             title,
             content,
             lastModified: new Date().toISOString(),
-            userId: 1001,
+            userId: user.id,
         };
 
         updateUserNote(newNote, noteId)
             .then((response) => {
+                console.log("User id for this note is: ", user.id);
                 console.log("Note added successfully: ", response.data);
                 navigate("/notes");
             })
