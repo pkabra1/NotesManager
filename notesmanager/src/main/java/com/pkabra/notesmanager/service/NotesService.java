@@ -30,7 +30,8 @@ public class NotesService {
 		return repo.insert(note);
 	}
 
-	public NoteContent updateNote(NoteContent note) {
+	public NoteContent updateNote(NoteContent note, String id) {
+		note.setId(id);
 		return repo.save(note);
 	}
 	

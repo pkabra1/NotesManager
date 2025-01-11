@@ -1,19 +1,18 @@
 import { Card, Button } from "react-bootstrap";
 import { React, useState, useEffect } from "react";
 import { deleteUserNote, getAllNotes } from "../components/api/ApiService";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { grid } from 'ldrs'
+// import CreateNoteButton from "./CreateNoteButton";
+import FloatingActionButton from "./FloatingActionButton";
+import { useNavigate } from 'react-router-dom';
 
 const NoteCard = ({ id, title, content, lastModified, onDelete }) => {
-    // const handleDelete = () => {
-    //     try {
-    //         deleteUserNote(id);
-    //         console.log("It is hitting handle delete");
-    //         getAllNotes(); // Refresh the notes after deletion
-    //     } catch (error) {
-    //         console.error("Error deleting note:", error);
-    //     }
-    // };
+
+    const navigate = useNavigate();
+    const editNote = () => {
+        navigate('/updateNote', { state: { title, content, id } });
+    }
     const handleDelete = async () => {
         try {
             await deleteUserNote(id);
@@ -31,11 +30,10 @@ const NoteCard = ({ id, title, content, lastModified, onDelete }) => {
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 marginBottom: "15px", // Adds spacing between cards
                 background: "#94d2bd",
-                padding: "10px", // Reduces padding inside the card
             }}
         >
             <Card.Header
-                className="text-white fw-bold fs-5"
+                className="text-white fw-bold fs-5 font-monospace"
                 style={{
                     // background: "linear-gradient(90deg, #4b6cb7, #182848)",
                     borderTopLeftRadius: "5px",
@@ -43,11 +41,12 @@ const NoteCard = ({ id, title, content, lastModified, onDelete }) => {
                     background: "#005f73",
                     padding: "8px 15px", // Decrease header padding
                 }}
+                onClick={editNote}
             >
                 {title || "Untitled Note"}
             </Card.Header>
             <Card.Body style={{ padding: "10px 15px" }}>
-                <Card.Text className="text-muted fs-6 mb-2" style={{ fontStyle: "italic" }}>
+                <Card.Text className="text-muted fs-6 mb-2 font-monospace" style={{ fontStyle: "italic" }} >
                     {content || "No content available for this note."}
                 </Card.Text>
                 <footer className="blockquote-footer text-end mb-1">
@@ -62,7 +61,7 @@ const NoteCard = ({ id, title, content, lastModified, onDelete }) => {
                     padding: "8px 15px", // Reduce footer padding
                 }}
             >
-                <Button variant="primary" size="sm" style={{ borderRadius: "8px" }}>
+                <Button variant="primary" size="sm" style={{ borderRadius: "8px" }} onClick={editNote}>
                     Edit
                 </Button>
 
@@ -75,7 +74,7 @@ const NoteCard = ({ id, title, content, lastModified, onDelete }) => {
     );
 };
 
-function App() {
+function UserNotes() {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const location = useLocation();
@@ -123,7 +122,8 @@ function App() {
     return (
         <div className="container mt-4">
             {notes.map((note) => (
-                <NoteCard
+                < NoteCard
+                    key={note.id}
                     id={note.id}
                     title={note.title}
                     content={note.content}
@@ -131,13 +131,10 @@ function App() {
                     onDelete={handleDeleteFromParent}
                 />
             ))}
-            <div className="text-center">
-                <Link to="/create" className="btn btn-primary mt-5">
-                    Create New Note
-                </Link>
-            </div>
+            {/* <CreateNoteButton count={notes.length} /> */}
+            <FloatingActionButton />
         </div>
     );
 };
 
-export default App;
+export default UserNotes;

@@ -1,16 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import NoteComponent from "./NoteComponent";
-import NewNote from "./NewNote";
 import Navbar from "./Navbar";
-// import backgroundImage from '../resources/53899.png';
-// import NoteCard from "./NoteCard";
 import App from "./NoteCard";
+import NewNote from "./NewNote";
+import UpdateNote from "./UpdateNote";
+import SearchResults from "./SearchResults";
+import Login from "./Login";
 
 export default function NotesApp() {
   return (
     <Router>
-      <div style={{
+      <div className="font-monospace" style={{
         position: 'relative',
         minHeight: '100vh'  // This ensures the container takes up full viewport height
       }}>
@@ -34,8 +34,12 @@ export default function NotesApp() {
           <div className="container p-4">
             <Routes>
               {/* <Route path="/notes" element={<NoteComponent />}></Route> */}
-              <Route path="/notes" element={<App />}></Route>
-              <Route path="/create" element={<NewNote />}></Route>
+              <Route path="/notes" element={<App />} />
+              {/* <Route path="/create" element={<NewNote />}></Route> */}
+              <Route path="/create" element={<NewNote />} />
+              <Route path="/updateNote" element={<UpdateNote />} />
+              <Route path="/search-results" element={<SearchResults />} />
+              <Route path="/login" element={<Login />} />
             </Routes>
           </div>
         </div>

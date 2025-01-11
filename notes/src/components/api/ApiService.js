@@ -16,3 +16,11 @@ export const deleteUserNote = (id) => {
     console.log("It is hitting delete user note with ID: ", id);
     return apiClient.delete(`/delete/note/${id}`);
 }
+
+export const updateUserNote = (note, id) => {
+    return apiClient.put(`/update/note/${id}`, note, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}
